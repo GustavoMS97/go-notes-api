@@ -6,14 +6,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/GustavoMS97/go-notes-api/internal/app"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
 	go func() {
 		<-c
 		log.Println("Exiting with Ctrl+C")
@@ -32,11 +31,7 @@ func main() {
 	env := os.Getenv("ENV")
 	log.Printf("Running in %s mode...\n", env)
 
-	app := fiber.New()
+	fiberApp := app.InitApp()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello from Go + Fiber!")
-	})
-
-	log.Fatal(app.Listen(":" + port))
+	log.Fatal(fiberApp.Listen(":" + port))
 }
