@@ -9,6 +9,17 @@ import (
 	"github.com/GustavoMS97/go-notes-api/internal/internal_error"
 )
 
+// CreateUser godoc
+// @Summary Register a new user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body CreateUserRequest true "User data"
+// @Success 201 {object} User
+// @Failure 400 {object} docs.ErrorResponse
+// @Failure 422 {object} docs.ErrorResponse
+// @Failure 500 {object} docs.ErrorResponse
+// @Router /users [post]
 func (uc *UserController) CreateUser(c *fiber.Ctx) error {
 	log.Println("[CreateUser] Creating user...")
 	var body CreateUserRequest

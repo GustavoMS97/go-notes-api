@@ -4,11 +4,18 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 
+	_ "github.com/GustavoMS97/go-notes-api/docs"
 	"github.com/GustavoMS97/go-notes-api/internal/di"
 	"github.com/GustavoMS97/go-notes-api/internal/routes"
 )
 
+// @title Go Notes API
+// @version 1.0
+// @description API for notes with JWT authentication
+// @host localhost:4000
+// @BasePath /api
 func InitApp() *fiber.App {
 	app := fiber.New()
 
@@ -16,6 +23,7 @@ func InitApp() *fiber.App {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello from Go + Fiber!")
 	})
+	app.Get("/docs/*", swagger.HandlerDefault)
 
 	// setup dependencies
 	container := di.NewContainer()
