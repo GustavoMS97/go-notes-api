@@ -1,6 +1,8 @@
 package user
 
 import (
+	"log"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 
@@ -9,6 +11,7 @@ import (
 )
 
 func (uc *UserController) Login(c *fiber.Ctx) error {
+	log.Println("[Login] Authenticating user...")
 	var body LoginRequest
 
 	if err := c.BodyParser(&body); err != nil {

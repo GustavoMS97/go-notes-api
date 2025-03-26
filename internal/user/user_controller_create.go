@@ -1,6 +1,8 @@
 package user
 
 import (
+	"log"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 
@@ -8,6 +10,7 @@ import (
 )
 
 func (uc *UserController) CreateUser(c *fiber.Ctx) error {
+	log.Println("[CreateUser] Creating user...")
 	var body CreateUserRequest
 	if err := c.BodyParser(&body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

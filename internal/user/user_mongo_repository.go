@@ -45,3 +45,21 @@ func (r *MongoUserRepository) FindByEmail(email string) (*User, error) {
 	}
 	return &user, nil
 }
+
+func (r *MongoUserRepository) FindByID(id string) (*User, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, errors.New("invalid user id format")
+	}
+
+	var user User
+	err = r.collection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+
+	return &user, nil
+}

@@ -60,3 +60,15 @@ func (s *UserService) GetByEmail(email string) (User, error) {
 	log.Println("[UserService] User found:", email)
 	return *existingUser, nil
 }
+
+func (s *UserService) FindByID(id string) (User, error) {
+	log.Println("[UserService] GetByID user:", id)
+
+	existingUser, err := s.repo.FindByID(id)
+	if err != nil {
+		log.Println("[UserService] Error retrieving user:", err)
+		return User{}, err
+	}
+
+	return *existingUser, nil
+}
