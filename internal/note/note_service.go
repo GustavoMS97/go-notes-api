@@ -1,6 +1,7 @@
 package note
 
 import (
+	"errors"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,4 +42,22 @@ func (s *NoteService) CreateNote(title, content, userID string) (Note, error) {
 func (s *NoteService) GetNotesByUser(userID string, search string) ([]Note, error) {
 	log.Println("[NoteService] Fetching notes:", userID, search)
 	return s.repo.FindAllByUserID(userID, search)
+}
+
+func (s *NoteService) UpdateNote(noteID string, userID string, title *string, content *string) (Note, error) {
+	updates := make(map[string]interface{})
+
+	if title != nil {
+		updates["title"] = *title
+	}
+
+	if content != nil {
+		updates["content"] = *content
+	}
+
+	if len(updates) == 0 {
+		return Note{}, errors.New("no fields to update")
+	}
+
+	return s.repo.UpdateByID(noteID, userID, updates)
 }

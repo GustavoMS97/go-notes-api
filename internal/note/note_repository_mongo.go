@@ -69,3 +69,38 @@ func (r *MongoNoteRepository) FindAllByUserID(userID string, search string) ([]N
 
 	return notes, nil
 }
+
+func (r *MongoNoteRepository) UpdateByID(noteID string, userID string, updates map[string]interface{}) (Note, error) {
+	noteObjectID, err := primitive.ObjectIDFromHex(noteID)
+	if err != nil {
+		return Note{}, errors.New("invalid note id")
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return Note{}, errors.New("invalid user id")
+	}
+
+	updates["updated_at"] = time.Now()
+
+	filter := bson.M{"_id": noteObjectID, "user_id": userObjectID}
+	update := bson.M{"$set": updates}
+
+	res := r.collection.FindOneAndUpdate(
+		context.Background(),
+		filter,
+		update,
+		options.FindOneAndUpdate().SetReturnDocument(options.After),
+	)
+
+	var updatedNote Note
+	err = res.Decode(&updatedNote)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return Note{}, errors.New("note not found or not owned by user")
+		}
+		return Note{}, err
+	}
+
+	return updatedNote, nil
+}
