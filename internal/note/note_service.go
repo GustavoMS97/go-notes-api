@@ -16,7 +16,7 @@ func NewNoteService(repo NoteRepository) *NoteService {
 }
 
 func (s *NoteService) CreateNote(title, content, userID string) (Note, error) {
-	log.Println("[NoteService] Creating note:", title, content, userID)
+	log.Println("[NoteService] Creating note")
 	oid, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		log.Println("[NoteService] Error creating note", err)
@@ -45,6 +45,7 @@ func (s *NoteService) GetNotesByUser(userID string, search string) ([]Note, erro
 }
 
 func (s *NoteService) UpdateNote(noteID string, userID string, title *string, content *string) (Note, error) {
+	log.Println("[NoteService] Updating note:", noteID, userID)
 	updates := make(map[string]interface{})
 
 	if title != nil {
@@ -60,4 +61,9 @@ func (s *NoteService) UpdateNote(noteID string, userID string, title *string, co
 	}
 
 	return s.repo.UpdateByID(noteID, userID, updates)
+}
+
+func (s *NoteService) DeleteNote(noteID string, userID string) error {
+	log.Println("[NoteService] Deliting note:", noteID, userID)
+	return s.repo.DeleteByID(noteID, userID)
 }

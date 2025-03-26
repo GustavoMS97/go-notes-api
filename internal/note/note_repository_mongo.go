@@ -104,3 +104,29 @@ func (r *MongoNoteRepository) UpdateByID(noteID string, userID string, updates m
 
 	return updatedNote, nil
 }
+
+func (r *MongoNoteRepository) DeleteByID(noteID string, userID string) error {
+	noteObjectID, err := primitive.ObjectIDFromHex(noteID)
+	if err != nil {
+		return errors.New("invalid note id")
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return errors.New("invalid user id")
+	}
+
+	res, err := r.collection.DeleteOne(context.Background(), bson.M{
+		"_id":     noteObjectID,
+		"user_id": userObjectID,
+	})
+	if err != nil {
+		return err
+	}
+
+	if res.DeletedCount == 0 {
+		return errors.New("note not found or not owned by user")
+	}
+
+	return nil
+}
