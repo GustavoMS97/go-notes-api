@@ -35,3 +35,6 @@ fmt:
 test:
 	@echo "🧪 Running tests..."
 	go test ./...
+
+swagger:
+	swag init -g cmd/main.go --parseDependency --parseInternal
