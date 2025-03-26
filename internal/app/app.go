@@ -1,9 +1,12 @@
 package app
 
 import (
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+
 	"github.com/GustavoMS97/go-notes-api/internal/di"
 	"github.com/GustavoMS97/go-notes-api/internal/routes"
-	"github.com/gofiber/fiber/v2"
 )
 
 func InitApp() *fiber.App {
@@ -16,9 +19,13 @@ func InitApp() *fiber.App {
 
 	// setup dependencies
 	container := di.NewContainer()
-
 	// register routes
 	routes.Register(app, container)
+
+	log.Println("📦 Registered Routes:")
+	for _, r := range app.GetRoutes() {
+		log.Printf("👉 %s %s", r.Method, r.Path)
+	}
 
 	return app
 }

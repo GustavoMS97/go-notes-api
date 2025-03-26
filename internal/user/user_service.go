@@ -47,3 +47,16 @@ func (s *UserService) CreateUser(name, email, plainPassword string) (User, error
 	log.Println("[UserService] User created successfully:", createdUser.ObjectID)
 	return createdUser, nil
 }
+
+func (s *UserService) GetByEmail(email string) (User, error) {
+	log.Println("[UserService] GetByEmail user:", email)
+
+	existingUser, err := s.repo.FindByEmail(email)
+	if err != nil {
+		log.Println("[UserService] Error retrieving user:", err)
+		return User{}, errors.New("error retrieving user")
+	}
+
+	log.Println("[UserService] User found:", email)
+	return *existingUser, nil
+}
