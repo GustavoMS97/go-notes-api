@@ -1,6 +1,8 @@
 package note
 
 import (
+	"log"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 
@@ -8,6 +10,7 @@ import (
 )
 
 func (nc *NoteController) CreateNote(c *fiber.Ctx) error {
+	log.Println("[CreateNote] Creating Note...")
 	var body CreateNoteRequest
 
 	if err := c.BodyParser(&body); err != nil {
