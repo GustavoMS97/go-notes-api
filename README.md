@@ -77,9 +77,11 @@ cd go-notes-api
 Create a `.env` file:
 ```env
 PORT=4000
-ENV=development
-DATABASE_URL=mongodb+srv://<user>:<pass>@cluster.mongodb.net/<db>?retryWrites=true&w=majority
-JWT_SECRET=your_super_secret_key
+ENV="development"
+DATABASE_URL="mongodb+srv://<user>:<pass>@cluster.mongodb.net"
+DATABASE_NAME="go-notes-api"
+JWT_SECRET="your_super_secret_key"
+SWAGGER_HOST="127.0.0.1:4000/api"
 ```
 
 ### 3. Run the app
