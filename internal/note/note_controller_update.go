@@ -9,6 +9,20 @@ import (
 	"github.com/GustavoMS97/go-notes-api/internal/internal_error"
 )
 
+// UpdateNote godoc
+// @Summary Update a note by ID
+// @Tags Notes
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Note ID"
+// @Param request body UpdateNoteRequest true "Fields to update"
+// @Success 200 {object} internal_note.Note
+// @Failure 400 {object} docs.ErrorResponse
+// @Failure 401 {object} docs.ErrorResponse
+// @Failure 404 {object} docs.ErrorResponse
+// @Failure 500 {object} docs.ErrorResponse
+// @Router /notes/{id} [put]
 func (nc *NoteController) UpdateNote(c *fiber.Ctx) error {
 	log.Println("[UpdateNote] Updating Note...")
 	noteID := c.Params("id")

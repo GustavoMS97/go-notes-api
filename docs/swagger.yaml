@@ -14,6 +14,38 @@ definitions:
         example: areallylongjwttoken
         type: string
     type: object
+  internal_note.CreateNoteRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  internal_note.Note:
+    properties:
+      _id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  internal_note.UpdateNoteRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    type: object
   internal_user.CreateUserRequest:
     properties:
       email:
@@ -66,6 +98,142 @@ info:
   title: Go Notes API
   version: "1.0"
 paths:
+  /notes:
+    get:
+      parameters:
+      - description: Filter by title (case insensitive)
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/internal_note.Note'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List notes for the logged-in user
+      tags:
+      - Notes
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Note data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_note.CreateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_note.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new note
+      tags:
+      - Notes
+  /notes/{id}:
+    delete:
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a note by ID
+      tags:
+      - Notes
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_note.UpdateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_note.Note'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a note by ID
+      tags:
+      - Notes
   /users:
     post:
       consumes:
@@ -114,8 +282,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/docs.LoginResponse'
         "400":
@@ -145,6 +313,10 @@ paths:
             $ref: '#/definitions/internal_user.User'
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/docs.ErrorResponse'
       security:

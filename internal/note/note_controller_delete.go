@@ -6,6 +6,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// DeleteNote godoc
+// @Summary Delete a note by ID
+// @Tags Notes
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Note ID"
+// @Success 204 "No Content"
+// @Failure 401 {object} docs.ErrorResponse
+// @Failure 404 {object} docs.ErrorResponse
+// @Failure 500 {object} docs.ErrorResponse
+// @Router /notes/{id} [delete]
 func (nc *NoteController) DeleteNote(c *fiber.Ctx) error {
 	log.Println("[DeleteNote] Deleting Note...")
 	noteID := c.Params("id")
