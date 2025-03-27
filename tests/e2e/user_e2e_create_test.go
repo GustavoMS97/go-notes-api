@@ -13,6 +13,7 @@ import (
 )
 
 func TestCreateUserE2E(t *testing.T) {
+	helpers.CleanupCollection("users")
 	t.Log("testing create user e2e")
 	app := app.InitApp()
 

@@ -4,30 +4,54 @@ import (
 	"context"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func CleanupCollection(collectionName string) {
-	log.Println("[Cleanup] Connecting to MongoDB for cleanup...", collectionName)
-	if err := godotenv.Load("../../.env.test"); err != nil {
-		log.Fatalf("failed to load .env.test: %v", err)
-	}
+var (
+	once    sync.Once
+	db      *mongo.Database
+	initErr error
+)
+
+func initMongo() {
+	_ = godotenv.Load("../../.env.test")
 
 	uri := os.Getenv("DATABASE_URL")
 	dbName := os.Getenv("DATABASE_NAME")
 
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 	if err != nil {
-		log.Fatalf("failed to connect to mongo: %v", err)
+		initErr = logError("failed to connect to mongo: %v", err)
+		return
 	}
 
-	collection := client.Database(dbName).Collection(collectionName)
+	db = client.Database(dbName)
+}
 
-	_, err = collection.DeleteMany(context.Background(), map[string]interface{}{})
+func CleanupCollection(collectionName string) {
+	once.Do(initMongo)
+
+	if initErr != nil || db == nil {
+		log.Printf("[Cleanup] Skipping cleanup, Mongo not initialized: %v", initErr)
+		return
+	}
+
+	log.Printf("[Cleanup] Cleaning collection: %s", collectionName)
+
+	_, err := db.Collection(collectionName).DeleteMany(context.Background(), map[string]interface{}{})
 	if err != nil {
-		log.Fatalf("failed to cleanup collection %s: %v", collectionName, err)
+		log.Printf("[Cleanup] Failed to cleanup collection %s: %v", collectionName, err)
 	}
+}
+
+func logError(format string, args ...interface{}) error {
+	err := log.Output(2, "[Cleanup] "+format)
+	if len(args) > 0 {
+		log.Printf("[Cleanup] "+format, args...)
+	}
+	return err
 }
