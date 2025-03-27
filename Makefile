@@ -56,3 +56,8 @@ test-cover:
 test-cover-html:
 	go test ./... -coverprofile=coverage.out
 	go tool cover -html=coverage.out
+
+lint:
+	@echo "🔍 Running linter..."
+	golangci-lint run ./...
+
