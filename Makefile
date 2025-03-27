@@ -31,10 +31,28 @@ fmt:
 	@echo "🎨 Formatting code..."
 	go fmt ./...
 
-# Run tests (if available)
-test:
-	@echo "🧪 Running tests..."
-	go test ./...
-
 swagger:
 	swag init -g cmd/main.go --parseDependency --parseInternal
+
+# Run all tests (unit + e2e)
+test:
+	go test ./... -v
+
+# Run only unit tests
+test-unit:
+	@echo "🧪 Running unit tests..."
+	@go test ./tests/unit/... -v
+
+# Run only e2e tests
+test-e2e:
+	@echo "🧪 Running E2E tests with .env.test..."
+	@export $$(cat .env.test | grep -v '^#' | xargs) && go test -p 1 ./tests/e2e/... -v
+
+# Run all tests with coverage report in terminal
+test-cover:
+	go test ./... -v -cover
+
+# Generate HTML coverage report
+test-cover-html:
+	go test ./... -coverprofile=coverage.out
+	go tool cover -html=coverage.out
