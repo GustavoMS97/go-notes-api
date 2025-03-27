@@ -11,6 +11,7 @@ This project simulates a real-world backend service with:
 - ✅ Environment variables support via `.env`
 - ✅ Modular code with proper folder structure (like NestJS-style)
 - ✅ Dockerized for easy deployment (e.g. Render, Railway, etc.)
+- ✅ Unit and E2E tests
 
 ---
 
@@ -58,6 +59,7 @@ internal/
 config/              # Application config
 cmd/                 # App bootstrap (main.go)
 docs/                # Swagger auto-generated
+tests/               # Test files
 .env                 # Environment variables
 Dockerfile           # Deployment config
 Makefile             # Helpers (run, swagger, etc.)
@@ -106,16 +108,6 @@ docker run -p 4000:4000 --env-file .env go-notes-api
 ```
 
 You can now deploy this on platforms like **Render**, **Railway**, **Fly.io**, etc.
-
----
-
-## 🧠 Future Improvements
-- ✅ Add support for user ownership (done)
-- ✅ Create, list, update, delete notes (done)
-- ✅ Full authentication flow (done)
-- [ ] Pagination for notes
-- [ ] Public/private toggle on notes
-- [ ] Unit testing & e2e tests
 
 ---
 
