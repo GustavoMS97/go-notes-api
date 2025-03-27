@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      ENV: ${{ secrets.TEST_ENV }}
+      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      DATABASE_NAME: ${{ secrets.TEST_DATABASE_NAME }}
+      JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+      SWAGGER_HOST: ${{ secrets.TEST_SWAGGER_HOST }}
 
     steps:
       - name: ⬇️ Checkout code
