@@ -6,10 +6,18 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/GustavoMS97/go-notes-api/docs"
 	"github.com/GustavoMS97/go-notes-api/internal/app"
 	"github.com/joho/godotenv"
 )
 
+// @title Go Notes API
+// @version 1.0
+// @description API for notes with JWT authentication
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @BasePath /api
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -21,6 +29,12 @@ func main() {
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using system environment variables")
+	}
+
+	// Set the host dynamically from .env or fallback
+	docs.SwaggerInfo.Host = os.Getenv("SWAGGER_HOST")
+	if docs.SwaggerInfo.Host == "" {
+		docs.SwaggerInfo.Host = "localhost:4000"
 	}
 
 	port := os.Getenv("PORT")

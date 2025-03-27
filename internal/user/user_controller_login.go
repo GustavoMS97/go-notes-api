@@ -10,6 +10,18 @@ import (
 	"github.com/GustavoMS97/go-notes-api/internal/internal_error"
 )
 
+// Login godoc
+// @Summary Authenticate user
+// @Description Log in with email and password and receive access and refresh tokens
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body LoginRequest true "Login credentials"
+// @Success 200 {object} docs.LoginResponse
+// @Failure 400 {object} docs.ErrorResponse
+// @Failure 401 {object} docs.ErrorResponse
+// @Failure 500 {object} docs.ErrorResponse
+// @Router /users/login [post]
 func (uc *UserController) Login(c *fiber.Ctx) error {
 	log.Println("[Login] Authenticating user...")
 	var body LoginRequest

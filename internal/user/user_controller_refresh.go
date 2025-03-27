@@ -8,6 +8,18 @@ import (
 	"github.com/GustavoMS97/go-notes-api/internal/auth"
 )
 
+// RefreshToken godoc
+// @Summary Refresh access token
+// @Description Use a valid refresh token to generate a new access and refresh token
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body RefreshRequest true "Refresh token"
+// @Success 201 {object} docs.LoginResponse
+// @Failure 400 {object} docs.ErrorResponse
+// @Failure 401 {object} docs.ErrorResponse
+// @Failure 500 {object} docs.ErrorResponse
+// @Router /users/refresh [post]
 func (uc *UserController) RefreshToken(c *fiber.Ctx) error {
 	log.Println("[RefreshToken] Refreshing user auth token...")
 	var body RefreshRequest

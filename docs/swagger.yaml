@@ -5,6 +5,15 @@ definitions:
         example: Something went wrong
         type: string
     type: object
+  docs.LoginResponse:
+    properties:
+      access_token:
+        example: areallylongjwttoken
+        type: string
+      refresh_token:
+        example: areallylongjwttoken
+        type: string
+    type: object
   internal_user.CreateUserRequest:
     properties:
       email:
@@ -21,6 +30,23 @@ definitions:
     - name
     - password
     type: object
+  internal_user.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  internal_user.RefreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
   internal_user.User:
     properties:
       _id:
@@ -36,6 +62,9 @@ definitions:
     type: object
 info:
   contact: {}
+  description: API for notes with JWT authentication
+  title: Go Notes API
+  version: "1.0"
 paths:
   /users:
     post:
@@ -69,5 +98,98 @@ paths:
             $ref: '#/definitions/docs.ErrorResponse'
       summary: Register a new user
       tags:
-      - users
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in with email and password and receive access and refresh tokens
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/docs.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      summary: Authenticate user
+      tags:
+      - Users
+  /users/me:
+    get:
+      description: Return the currently authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_user.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get logged in user
+      tags:
+      - Users
+  /users/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Use a valid refresh token to generate a new access and refresh
+        token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_user.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/docs.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/docs.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
