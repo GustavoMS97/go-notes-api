@@ -67,6 +67,10 @@ func (r *MongoNoteRepository) FindAllByUserID(userID string, search string) ([]N
 		notes = append(notes, note)
 	}
 
+	if notes == nil {
+		notes = []Note{}
+	}
+
 	return notes, nil
 }
 
